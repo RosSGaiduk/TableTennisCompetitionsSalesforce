@@ -1,0 +1,45 @@
+<apex:page controller="GameController" id="Game_Create" cache="false">
+    <apex:form >
+        
+        <apex:pageMessages /> <!-- this is where the error messages will appear -->
+         <apex:pageBlock title="Create game">
+
+      <apex:pageBlockButtons location="bottom">
+        <apex:commandButton action="{!create}" value="Save"/>
+      </apex:pageBlockButtons>
+
+      <apex:pageBlockSection showHeader="true" columns="1">
+        <apex:inputField value="{!game.Name}"/>
+        <apex:inputField value="{!game.Start_Date__c}" required="true"/>
+        
+        <p>Tournament ID</p>
+        <div style = "margin-left:500px;">
+         <apex:selectList value="{!tournamentId}" size="1">
+           <apex:actionSupport />
+             <apex:selectOptions value="{!items}"/>
+           </apex:selectList>
+            </div>
+            
+            <p>First player ID</p>
+            <div style = "margin-left:500px;">
+         <apex:selectList value="{!firstPlayerId}" size="1">
+           <apex:actionSupport />
+             <apex:selectOptions value="{!PlayersDetails}"/>
+           </apex:selectList>
+            </div>
+            
+            
+            <p>Second player ID</p>
+            <div style = "margin-left:500px;">
+         <apex:selectList value="{!secondPlayerId}" size="1">
+           <apex:actionSupport />
+             <apex:selectOptions value="{!PlayersDetails}"/>
+           </apex:selectList>
+            </div>
+  
+      </apex:pageBlockSection>
+    </apex:pageBlock>
+
+        
+    </apex:form>
+</apex:page>

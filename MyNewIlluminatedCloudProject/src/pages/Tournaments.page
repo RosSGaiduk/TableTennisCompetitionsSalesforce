@@ -1,0 +1,114 @@
+<apex:page id="Tournaments" controller="FindTournamentsController" cache="false">
+    <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>
+    </head>
+
+
+<body>
+<apex:form >
+<apex:pageBlock rendered="true">
+    
+    <apex:pageBlockButtons location="bottom">
+    <apex:commandButton action="{!showTournaments}" value="Find"/>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection showHeader="true" columns="1">
+    <apex:pageBlockSectionItem >
+    <apex:outputLabel value="Name of tournment: " for="tournamentName"/>
+    <apex:inputField value="{!tournament.Name}" id="tournamentName"/>
+    </apex:pageBlockSectionItem>
+    
+    <apex:pageBlockSectionItem >
+    <apex:outputLabel value="Status of tournment: " for="tournamentStatus"/>
+    <apex:inputField value="{!tournament.Status__c}" id="tournamentStatus"/>
+    </apex:pageBlockSectionItem>
+    
+    
+    </apex:pageBlockSection>
+</apex:pageBlock>
+    <script>
+        var tounramentsWhichPlayerApplied = [];
+    </script>
+    <apex:repeat value="{!player_tournaments}" var="tournamentApplied">
+        <script>
+            function pushTournamentId() {
+                tounramentsWhichPlayerApplied.push('{!tournamentApplied.TournamentId__c}');
+            }
+            pushTournamentId();
+        </script>
+    </apex:repeat>
+
+    <apex:repeat value="{!teams}" var="team">
+        <script>
+            function pushTournamentId() {
+                tounramentsWhichPlayerApplied.push('{!team.TournamentId__c}');
+            }
+            pushTournamentId();
+        </script>
+    </apex:repeat>
+</apex:form>
+
+<div id = 'allTournaments'>
+    <apex:pageBlock title="myTable">
+    <apex:pageBlockTable value="{!tournamentsFound}" var="tournament">
+        <apex:column value="{!tournament.Name}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+        <apex:column value="{!tournament.Start_Date__c}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+        <apex:column value="{!tournament.End_Date__c}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+        <apex:column value="{!tournament.Status__c}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+        <apex:column value="{!tournament.Type__c}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+        <apex:column value="{!tournament.Format__c}" onClick="hrefTo('/tournament?currentTournament={!tournament.Id}')" style="cursor:hand;"/>
+
+
+        <apex:column rendered="{!isAdmin}">
+            <a href = "/CreateTournament?tournament={!tournament.Id}">Edit</a>
+        </apex:column>
+
+        <apex:column rendered="{!tournament.Status__c == 'Upcoming' && loggedIn && tournament.Format__c=='1x1'}">
+            <div id = 'upcomingTournament_{!tournament.Id}_1x1'>
+                <a id = 'aApply_{!tournament.Id}' href = '/applyTournament?currentTournament={!tournament.Id}'>Apply</a>
+            </div>
+        </apex:column>
+
+
+        <apex:column rendered="{!tournament.Status__c == 'Upcoming' && loggedIn && tournament.Format__c!='1x1'}">
+            <div id = 'upcomingTournament_{!tournament.Id}_2x2'>
+                <a id = 'aApply_{!tournament.Id}' href = '/createTeam?tournament={!tournament.Id}'>Apply</a>
+            </div>
+        </apex:column>
+    </apex:pageBlockTable>
+    </apex:pageBlock>
+</div>
+
+</body>
+
+    <script>
+        function checkIfPlayerAppliedToUpcomingTournament(){
+            var upcomingTournaments = $( "div[id^='upcomingTournament_']");
+            $.each(upcomingTournaments, function(k,v){
+                for (var i = 0; i < tounramentsWhichPlayerApplied.length; i++){
+                    var idUpcomingTournament = v.id.split('_')[1];
+                    if (idUpcomingTournament == tounramentsWhichPlayerApplied[i]){
+                        if (v.id.split('_')[2].indexOf('1x1')!=-1) {
+                            var aApplyTournament = $('#aApply_' + idUpcomingTournament);
+                            aApplyTournament.html('Cancel application');
+                        } else {
+                            $('#aApply_'+idUpcomingTournament).remove();
+                            $('#upcomingTournament_'+idUpcomingTournament+'_2x2').append(
+                                    "<p></p>")
+                        }
+                    } else {
+                        $('#upcomingTournament_'+idUpcomingTournament+'_2x2').append(
+                                "<p></p>")
+                    }
+                }
+            })
+        }
+        function hrefTo(urlTo){
+            location.href = urlTo;
+        }
+        checkIfPlayerAppliedToUpcomingTournament();
+    </script>
+</apex:page>

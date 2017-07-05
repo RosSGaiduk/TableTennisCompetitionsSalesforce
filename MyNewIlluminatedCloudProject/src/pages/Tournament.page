@@ -1,0 +1,222 @@
+<!--
+ - Created by Rostyslav on 25.06.2017.
+ -->
+
+<apex:page id="Tournament" controller="FindTournamentsController" action="{!showPlayersOfTournament}" cache="false" showHeader="true">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+        <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>
+        <style>
+            table {
+                width:auto;
+                border: 0px solid blue;
+            }
+            table, th, td {
+                border: 0px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+            table#t01 tr:nth-child(even) {
+                background-color: #eee;
+            }
+            table#t01 tr:nth-child(odd) {
+                background-color:#fff;
+            }
+            table#t01 th {
+                background-color: black;
+                color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+
+    <script>
+        var size = '{!players.size}';
+        var players = [];
+        var gamesDetails = [];
+        var currentPlayer = '';
+        var currentRow = -1;
+    </script>
+
+    <h1>All players which take part in this tournament</h1>
+    <p style="clear: left"/>
+    <div id="" style="width: auto; height: auto; margin-left: 0px; float: left;">
+        <apex:repeat value="{!players}" var="player">
+            <script>
+                players.push('{!player.Id}'+','+'{!player["Name"]}');
+            </script>
+        </apex:repeat>
+    </div>
+
+    <apex:pageBlock mode="maindetail">
+    <apex:pageBlockTable value="{!players}" var="player">
+        <apex:column value="{!player['Name']}"/>
+    </apex:pageBlockTable>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="true">
+        <script>
+            currentPlayer = '{!currentPlayer}';
+        </script>
+    </apex:pageBlock>
+
+
+    <script>
+      gamesDetails = {!results};
+    </script>
+
+    <script>
+        function createGameClick(row,column){
+            location.href = "createGameResult?players="+players[row].split(',')[0]+","+players[column].split(',')[0]+"&tournament={!tournamentId}";
+        }
+
+        function getWinner(id1,id2) {
+            for (var i = 0; i < gamesDetails.length; i++) {
+                var jsonGame = JSON.parse(gamesDetails[i]);
+                if (jsonGame.FirstCompetitorId==id1 && jsonGame.SecondCompetitorId==id2){
+                    return jsonGame.Won!=null?jsonGame.Won:'';
+                }
+            }
+            return '';
+        }
+        function getTotalPoints(id1){
+            var points = 0;
+            for (var i = 0; i < gamesDetails.length; i++) {
+                var jsonGame = JSON.parse(gamesDetails[i]);
+                if (jsonGame.FirstCompetitorId==id1 || jsonGame.SecondCompetitorId==id1){
+                    if (jsonGame.Won==id1) points++;
+                }
+            }
+            return points;
+        }
+
+        function getScores(id1,id2){
+            for (var i = 0; i < gamesDetails.length; i++) {
+                var jsonGame = JSON.parse(gamesDetails[i]);
+                if (jsonGame.FirstCompetitorId==id1 && jsonGame.SecondCompetitorId==id2){
+                    return jsonGame.FirstCompetitorScore+':'+jsonGame.SecondCompetitorScore;
+                }
+            }
+            return '';
+        }
+
+    </script>
+
+    <!-----------------------------------------------------
+            -----------------------------------------------
+            -----------------------------------------------
+            -----------------------------------------------
+            -----------------------------------------------
+            -----------------------------------------------
+            Round Robin Table
+    -->
+    <apex:pageBlock rendered="{!currentTournament.Type__c=='Round Robin'}">
+    <p style="clear: left;"/>
+    <table style="width: auto; height: auto; float: left; margin-top: 20px; border: 1px solid blue;" id = "roundRobinTable">
+        <tr><th width='50'>#</th> <th width='200'>Players</th><th colspan='{!players.size}' width = '300'>Games</th><th width = '100'>Total points</th><th width='100'>Place</th></tr>
+        <tr id = 'firstRow'>
+            <script>
+                $("#firstRow").append("<td></td><td></td>");
+                for (var i = 0; i < size; i++)
+                    $("#firstRow").append("<td>"+(i+1)+"</td>");
+                $("#firstRow").append("<td></td><td></td>");
+            </script>
+        </tr>
+        <apex:repeat value="{!players}" var="player">
+            <script>
+                currentRow++;
+                $("#roundRobinTable").append("<tr id = 'playersRow_"+currentRow+"'>" +
+                        "<td>"+(currentRow+1)+"</td>");
+                        if (currentPlayer=='{!player.Id}') {
+                            $("#playersRow_" + currentRow).append(
+                                    "<td height='40' bgColor = 'lightblue'>{!player['Name']}</td>" +
+                                    "</tr>");
+                        } else {
+                            $("#playersRow_" + currentRow).append(
+                                    "<td height='40'>{!player['Name']}</td>" +
+                                    "</tr>");
+                        }
+                for (var column = 0; column < size; column++) {
+                    if (column==currentRow) {$("#playersRow_"+currentRow).append("<td bgcolor='black'></td>");}
+                    else {
+                        $("#playersRow_"+currentRow).append("<td id ='tdPlayerRow_"+currentRow+"_"+players[column].split(',')[0]+"' style='border: 1px solid black;' onclick='createGameClick("+currentRow+","+column+")'>"+
+                                getScores(players[currentRow].split(',')[0],players[column].split(',')[0])+
+                                "</td>");
+                        if (getWinner(players[currentRow].split(',')[0],players[column].split(',')[0])==players[currentRow].split(',')[0]){
+                            document.getElementById("tdPlayerRow_"+currentRow+"_"+players[column].split(',')[0]).bgColor = 'lightgreen';
+                        } else if (getWinner(players[currentRow].split(',')[0],players[column].split(',')[0])==players[column].split(',')[0]){
+                            document.getElementById("tdPlayerRow_"+currentRow+"_"+players[column].split(',')[0]).bgColor = 'red';
+                        } else {
+                            document.getElementById("tdPlayerRow_"+currentRow+"_"+players[column].split(',')[0]).bgColor = 'E08CF7';
+                        }
+                    }
+                }
+                $("#playersRow_"+currentRow).append("<td>"+getTotalPoints(players[currentRow].split(',')[0])+"</td><td></td>");
+            </script>
+        </apex:repeat>
+    </table>
+        <div style="float: left; margin-left: 20px;">
+    <p style="clear: left"/>
+    <div style="width: auto; margin-top: 20px;">
+    <div style="width: 50px; height: 50px; background-color: lightgreen; float: left;"></div>
+    <div style="float: left"><p>Competitor in the row has won current game</p></div>
+    </div>
+    <p style="clear: left"/>
+    <div style="width: auto; margin-top: 20px;">
+    <div style="width: 50px; height: 50px; background-color: red; float: left;"></div>
+    <div style="float: left"><p>Competitor in the row has lost current game</p></div>
+    </div>
+    <p style="clear: left"/>
+    <div style="width: auto; margin-top: 20px;">
+    <div style="width: 50px; height: 50px; background-color: rgb(234, 87, 254); float: left;"></div>
+    <div style="float: left"><p>Current game has not played yet</p></div>
+    </div>
+    <p style="clear: left"/>
+    <div style="width: auto; margin-top: 20px;">
+    <div style="width: 50px; height: 50px; background-color: lightblue; float: left;"></div>
+    <div style="float: left"><p>This is you</p></div>
+    </div>
+        </div>
+    </apex:pageBlock>
+    <!-----------------------------------------------------
+                -----------------------------------------------
+                -----------------------------------------------
+                -----------------------------------------------
+                -----------------------------------------------
+                -----------------------------------------------
+                Single Elumination Table
+        -->
+    <div style="width: auto; height: auto; float: left;" id = "singleIllumination"></div>
+    <apex:pageBlock  rendered="{!currentTournament.Type__c!='Round Robin'}" mode="maindetail">
+    <table align="center" style="width: 950px; border: 0px;">
+        <tr>
+            <apex:repeat value="{!gameJSONList}" var="gameList">
+                <td>
+                    <apex:repeat value="{!gameList}" var="game">
+                        <div style="border: 1px solid blue; margin-top: 10px;">
+                        <ul>
+                            <li>{!game.FirstCompetitorName}</li>
+                            <li style="list-style-position:inside;">{!game.FirstCompetitorScore}</li>
+                            <li style="list-style-position:inside;"><font color="green">Winner {!game.WinnerName}</font></li>
+                            <apex:pageBlock rendered="{!currentPlayer==game.FirstCompetitorId || currentPlayer==game.SecondCompetitorId}" mode="maindetail">
+                            <a href="CreateGameResult?players={!game.FirstCompetitorId},{!game.SecondCompetitorId}&tournament={!currentTournament.Id}">Create result</a>
+                            </apex:pageBlock>
+                            <li style="list-style-position:inside;">{!game.SecondCompetitorScore}</li>
+                            <li>{!game.SecondCompetitorName}</li>
+                        </ul>
+                        </div>
+                    </apex:repeat>
+                </td>
+            </apex:repeat>
+        </tr>
+    </table>
+    </apex:pageBlock>
+
+    </body>
+</apex:page>

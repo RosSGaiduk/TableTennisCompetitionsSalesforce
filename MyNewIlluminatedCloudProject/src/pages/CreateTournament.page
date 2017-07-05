@@ -1,0 +1,63 @@
+<!--
+ - Created by Rostyslav on 22.06.2017.
+ -->
+
+<apex:page id="CreateTournament" controller="CreateTournamentController" cache="false">
+
+    <apex:sectionHeader title="Visualforce Example" subtitle="Create or edit tournament"/>
+    <apex:form >
+        <apex:pageMessages /> <!-- this is where the error messages will appear -->
+        <apex:pageBlock title="Creating tournament" rendered="{!isAdmin}">
+
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection showHeader="true" columns="2">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Name of tournament" for="tournament_name"/>
+                    <apex:inputField value="{!tournament.Name}" id="tournament_name" required="true"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Start date" for="tournament_startDate"/>
+                    <apex:inputField value="{!tournament.Start_Date__c}" id="tournament_startDate" required="true"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="End date" for="tournament_endDate"/>
+                    <apex:inputField value="{!tournament.End_Date__c}" id="tournament_endDate" required="true"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Status of tournament" for="tournament_Status"/>
+                    <apex:inputField value="{!tournament.Status__c}" id="tournament_Status"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Type of tournament" for="tournament_Type"/>
+                    <apex:inputField value="{!tournament.Type__c}" id="tournament_Type"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Format of tournament" for="tournament_Format"/>
+                    <apex:inputField value="{!tournament.Format__c}" id="tournament_Format"/>
+                </apex:pageBlockSectionItem>
+                <p style="clear: left"/>
+
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+
+
+    <apex:pageBlock rendered="{!isAdmin==false}">
+        <h1>You have not access to create new tournament</h1>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,63 @@
+<!--
+ - Created by Rostyslav on 26.06.2017.
+ -->
+
+<apex:page id="CreateGameResult" controller="GameController" cache="false">
+    <head>
+    </head>
+
+    <body>
+    <apex:pageBlock rendered="{!tournament.Status__c=='Current' && anotherStage==false && canModifyGame}">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock title="Editing current game" rendered="true">
+
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Edit" action="{!edit}"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection showHeader="true" columns="1">
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Name of game" for="game_name"/>
+                <input value="{!game.Name}" id="firstCompetitor" readonly="true"/>
+            </apex:pageBlockSectionItem>
+
+             <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="First competitor" for="firstCompetitor"/>
+                    <input value="{!firstCompetitor}" id="firstCompetitor" readonly="true"/>
+            </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Second competitor" for="secondCompetitor"/>
+                    <input value="{!secondCompetitor}" id="secondCompetitor" readonly="true"/>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="First competitor score"/>
+                    <apex:inputField value="{!game.First_Competitor_Score__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Second competitor score"/>
+                    <apex:inputField value="{!game.Second_Competitor_Score__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!tournament.Status__c!='Current'}">
+        <p style="color: red;">Status of current tournament is {!tournament.Status__c} -  you can not set results of games of tournament, which hasn't began yet.</p>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!anotherStage}">
+        <p style="color: red;">Stage of current tournament is later than stage of this game - you can not set results of games, that were accepted in {!tournament.Type__c} type.</p>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!canModifyGame==false}">
+        <p style="color: red;">You can't edit current game because you are not player of this game or this tournament is Completed</p>
+    </apex:pageBlock>
+
+    </body>
+</apex:page>

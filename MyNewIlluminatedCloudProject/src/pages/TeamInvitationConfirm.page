@@ -1,0 +1,6 @@
+<!--
+ - Created by Rostyslav on 03.07.2017.
+ -->
+
+<apex:page id="TeamInvitationConfirm" controller="TeamController" action="{!confirmInvitation}">
+</apex:page>

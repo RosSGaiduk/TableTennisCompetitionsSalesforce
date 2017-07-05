@@ -1,0 +1,43 @@
+<apex:page id="HelloWorld" controller="HomePageController" cache="false">
+     <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>
+    </head>
+    <body>
+     <!-- Begin Default Content REMOVE THIS -->
+     <h1>My table tennis site</h1>
+     <h1>Hello world</h1>
+     
+     <apex:pageBlock rendered="{!loggedIn==false}">
+     <a href = '/Player_Create'>Registration</a>
+     <a href = '/loginPlayer'>Login</a>
+     </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!loggedIn}">
+        <a href = '/LogoutPlayer'>Log out</a>
+    </apex:pageBlock>
+    
+    <apex:pageBlock rendered="{!isAdmin}">
+    <a href="/CreateTournament">Create tournament</a>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="true">
+    <a href="/Tournaments">All tournaments</a>
+    </apex:pageBlock>
+    <script>
+        var valuee = {!values};
+    </script>
+    </body>
+    <!--<script>
+        function someAlert(){
+        var jsonInputJSON = {!values};
+             $.each(jsonInputJSON,function(k,v){
+                   var jsonObj =  JSON.parse(v);
+                   alert(jsonObj.count+' '+jsonObj.res);
+             })
+        }
+        someAlert();
+    </script>-->
+</apex:page>

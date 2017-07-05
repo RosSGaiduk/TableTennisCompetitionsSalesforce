@@ -1,0 +1,24 @@
+<apex:page id="PlayerRegistrationConfirm" controller="PlayerRegistrationConfirmController">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>
+
+
+    <apex:form >
+    <apex:inputHidden value="{!ID_Player}" id="myHiddenField"/>
+    <apex:sectionHeader title="Visualforce Example" subtitle="Create a Player"/>
+    <apex:actionFunction name="passStringToController" action="{!confirmPlayer}" rerender="myHiddenField"/>
+    <apex:commandButton value="Test me" onclick="setIDPlayer(); return false;" />
+    </apex:form>
+
+
+    <script type="text/javascript">
+        function setIDPlayer(){
+            var id = window.location.href.split("?")[1];
+            $('[id$=myHiddenField]').val(id);
+            passStringToController();
+        }
+        setIDPlayer();
+    </script>
+</apex:page>

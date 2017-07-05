@@ -1,0 +1,31 @@
+<!--
+ - Created by Rostyslav on 20.06.2017.
+ -->
+<apex:page id="loginPlayer" controller="LoginPlayerSessionController">
+        <apex:sectionHeader title="Visualforce Example" subtitle="Create a Player"/>
+        <apex:form >
+            <apex:pageMessages /> <!-- this is where the error messages will appear -->
+            <apex:pageBlock title="Player Info">
+
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton action="{!login}" value="Submit"/>
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection showHeader="true" columns="2">
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Email of player" for="playerEmail"/>
+                        <input value="{!playerEmail}" id="playerEmail" name="playerEmailName"/>
+                    </apex:pageBlockSectionItem>
+                    <p style="clear: left"/>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Password of player" for="playerPassword"/>
+                        <apex:inputSecret value="{!playerPassword}" id="playerPassword" />
+                    </apex:pageBlockSectionItem>
+                    <p style="clear: left"/>
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+        <p>This is page for signing in</p>
+</apex:page>

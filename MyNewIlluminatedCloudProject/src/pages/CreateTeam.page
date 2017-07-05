@@ -1,0 +1,41 @@
+<!--
+ - Created by Rostyslav on 27.06.2017.
+ -->
+
+<apex:page id="CreateTeam" controller="TeamController" cache="false">
+    <apex:sectionHeader title="Visualforce Example" subtitle="Create team"/>
+    <apex:form >
+        <apex:pageMessages />
+
+        <apex:pageBlock title="Creating team" rendered="true">
+
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!create}" value="Create"/>
+            </apex:pageBlockButtons>
+
+
+            <apex:pageBlockSection showHeader="true" columns="1">
+
+
+               <!-- <apex:pageBlockSectionItem >-->
+                   <!-- <apex:outputLabel value="Name of team" for="team_name"/>-->
+                    <apex:inputField value="{!team.Name}" id="team_name" required="true" style="width: 200px"/>
+               <!-- </apex:pageBlockSectionItem>-->
+               <!-- <apex:pageBlockSectionItem >-->
+                   <!-- <apex:outputLabel value="Tournament" for="tournament_name"/>-->
+                    <input value="{!tournament.Name}" id="tournament_name" readonly="true" label="Name" style="width: 200px; margin-left: 18%;"/>
+                <!--</apex:pageBlockSectionItem>-->
+
+                <p style="margin-left: 18%;"><strong>Invite player</strong></p>
+                   <!-- <apex:outputLabel value="Tournament" for="tournament_name"/>-->
+                <apex:selectList value="{!invitePlayerId}" size="1" style="margin-left:18%;">
+                    <apex:selectOptions value="{!players}"/>
+                </apex:selectList>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+
+    </apex:form>
+
+</apex:page>

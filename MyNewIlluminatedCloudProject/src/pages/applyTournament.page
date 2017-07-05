@@ -1,0 +1,7 @@
+<!--
+ - Created by Rostyslav on 25.06.2017.
+ -->
+
+<apex:page id="applyTournament" controller="FindTournamentsController" action="{!apply}">
+
+</apex:page>
